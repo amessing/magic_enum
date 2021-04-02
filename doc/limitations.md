@@ -1,8 +1,9 @@
 # Limitations
 
-* To check is magic_enum supported compiler use macro `MAGIC_ENUM_SUPPORTED` or constexpr constant `magic_enum::is_magic_enum_supported`.
-
 * This library uses a compiler-specific hack (based on `__PRETTY_FUNCTION__` / `__FUNCSIG__`), which works on Clang >= 5, MSVC >= 15.3 and GCC >= 9.
+
+* To check is magic_enum supported compiler use macro `MAGIC_ENUM_SUPPORTED` or constexpr constant `magic_enum::is_magic_enum_supported`.</br>
+  If magic_enum used on unsupported compiler, occurs the compilation error. To suppress error define macro `MAGIC_ENUM_NO_CHECK_SUPPORT`.
 
 * Enum can't reflect if the enum is a forward declaration.
 
@@ -38,7 +39,7 @@
     } // namespace magic_enum
     ```
 
-* `magic_enum` won't work if a value is aliased. Work with enum-aliases is compiler-implementation-defined.
+* `magic_enum` [won't work if a value is aliased](https://github.com/Neargye/magic_enum/issues/68). Work with enum-aliases is compiler-implementation-defined.
 
   ```cpp
   enum ShapeKind {
@@ -48,10 +49,10 @@
     ConvexEnd = 2,
     Donut = 2, // Won't work too.
     Banana = 3,
-    COUNT = 4,
+    COUNT = 4
   };
-  // magic_enum::enum_cast<ShapeKind>("Box") -> std::nullopt or ShapeKind::Box
-  // magic_enum::enum_name(ShapeKind::Box) -> "ConvexBegin" or ""
+  // magic_enum::enum_cast<ShapeKind>("Box") -> nullopt
+  // magic_enum::enum_name(ShapeKind::Box) -> "ConvexBegin"
   ```
 
   One of the possible workaround the issue:
@@ -70,19 +71,28 @@
 
     // Non-reflected aliases.
     ConvexBegin = Box,
-    ConvexEnd = Sphere + 1,
+    ConvexEnd = Sphere + 1
   };
   // magic_enum::enum_cast<ShapeKind>("Box") -> ShapeKind::Box
   // magic_enum::enum_name(ShapeKind::Box) -> "Box"
 
   // Non-reflected aliases.
-  // magic_enum::enum_cast<ShapeKind>("ConvexBegin") -> std::nullopt
+  // magic_enum::enum_cast<ShapeKind>("ConvexBegin") -> nullopt
   // magic_enum::enum_name(ShapeKind::ConvexBegin) -> "Box"
   ```
 
-  On some compiler enum-aliases not supported, [for example Visual Studio 2017](https://github.com/Neargye/magic_enum/issues/36).
+  On some compiler enum-aliases not supported, [for example Visual Studio 2017](https://github.com/Neargye/magic_enum/issues/36), macro `MAGIC_ENUM_SUPPORTED_ALIASES` will be undefined.
 
-  It is possible to check whether enum-aliases supported using a macro `MAGIC_ENUM_SUPPORTED_ALIASES`.
+  ```cpp
+  enum Number {
+    one = 1,
+    ONE = 1
+  };
+  // magic_enum::enum_cast<Number>("one") -> nullopt
+  // magic_enum::enum_name(Number::one) -> ""
+  // magic_enum::enum_cast<Number>("ONE") -> nullopt
+  // magic_enum::enum_name(Number::ONE) -> ""
+  ```
 
 * If you hit a message like this:
 

@@ -1,6 +1,6 @@
 // Licensed under the MIT License <http://opensource.org/licenses/MIT>.
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2019 - 2020 Daniil Goncharov <neargye@gmail.com>.
+// Copyright (c) 2019 - 2021 Daniil Goncharov <neargye@gmail.com>.
 //
 // Permission is hereby  granted, free of charge, to any  person obtaining a copy
 // of this software and associated  documentation files (the "Software"), to deal
@@ -77,7 +77,7 @@ int main() {
   std::cout << std::endl;
   // AnimalFlags sequence: HasClaws CanFly EatsFish Endangered
 
-  using namespace magic_enum::bitwise_operators; // out-of-the-box bitwise operators for all enums.
+  using namespace magic_enum::flags::bitwise_operators; // out-of-the-box bitwise operators for all enums.
   // Support operators: ~, |, &, ^, |=, &=, ^=.
   AnimalFlags flag = AnimalFlags::HasClaws | AnimalFlags::CanFly;
   std::cout << flag << std::endl; // HasClaws|CanFly

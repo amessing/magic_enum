@@ -13,7 +13,7 @@
 * [`enum_type_name` returns type name of enum.](#enum_type_name)
 * [`is_unscoped_enum` checks whether type is an Unscoped enumeration.](#is_unscoped_enum)
 * [`is_scoped_enum` checks whether type is an Scoped enumeration.](#is_scoped_enum)
-* [`underlying_type` improved UB-free "SFINAE-friendly" std::underlying_type.](#underlying_type)
+* [`underlying_type` improved UB-free "SFINAE-friendly" underlying_type.](#underlying_type)
 * [`ostream_operators` ostream operators for enums.](#ostream_operators)
 * [`bitwise_operators` bitwise operators for enums.](#bitwise_operators)
 
@@ -25,6 +25,19 @@
   If magic_enum used on unsupported compiler, occurs the compilation error. To suppress error define macro `MAGIC_ENUM_NO_CHECK_SUPPORT`.
 
 * For the small enum use the API from the namespace `magic_enum`, and for enum-flags use the API from the namespace `magic_enum::flags`.
+
+* To add custom enum or type names see the [example](../example/example_custom_name.cpp).
+
+* To change the type of strings or ortional, use special macros:
+
+  ```cpp
+  #include <my_lib/string.hpp>
+  #include <my_lib/string_view.hpp>
+  #define MAGIC_ENUM_USING_ALIAS_STRING using string = my_lib::String;
+  #define MAGIC_ENUM_USING_ALIAS_STRING_VIEW using string_view = my_lib::StringView;
+  #define MAGIC_ENUM_USING_ALIAS_OPTIONAL template <typename T> using optional = my_lib::Optional<T>;
+  #include <magic_enum.hpp>
+  ```
 
 ## `enum_cast`
 
@@ -41,9 +54,9 @@ constexpr optional<E> enum_cast(string_view value, BinaryPredicate p) noexcept(i
 
 * Obtains enum value from string or integer.
 
-* Returns `std::optional<E>`, using `has_value()` to check contains enum value and `value()` to get the enum value.
+* Returns `optional<E>`, using `has_value()` to check contains enum value and `value()` to get the enum value.
 
-* If argument does not enum value, returns empty `std::optional`.
+* If argument does not enum value, returns empty `optional`.
 
 * Examples
 
@@ -62,7 +75,7 @@ constexpr optional<E> enum_cast(string_view value, BinaryPredicate p) noexcept(i
     ```cpp
     int color_integer = 2;
     auto color = magic_enum::enum_cast<Color>(color_integer);
-    if (colo.has_value()) {
+    if (color.has_value()) {
         // color.value() -> Color::RED
     }
     ```
@@ -93,7 +106,7 @@ template <typename E>
 constexpr array<E, N> enum_values() noexcept;
 ```
 
-* Returns `std::array<E, N>` with all enum values where `N = number of enum values`, sorted by enum value.
+* Returns `array<E, N>` with all enum values where `N = number of enum values`, sorted by enum value.
 
 * Examples
 
@@ -146,7 +159,7 @@ template <auto V>
 constexpr string_view enum_name() noexcept;
 ```
 
-* Returns name from enum value as `std::string_view` with null-terminated string.
+* Returns name from enum value as `string_view` with null-terminated string.
   * If enum value does not have name or [out of range](limitations.md), `enum_name(value)` returns empty string.
   * If enum value does not have name, `enum_name<value>()` occurs the compilation error `"Enum value does not have a name."`.
 
@@ -177,7 +190,7 @@ template <typename E>
 constexpr array<string_view, N> enum_names() noexcept;
 ```
 
-* Returns `std::array<std::string_view, N>` with all names where `N = number of enum values`, sorted by enum value.
+* Returns `array<string_view, N>` with all names where `N = number of enum values`, sorted by enum value.
 
 * Examples
 
@@ -194,7 +207,7 @@ template <typename E>
 constexpr array<pair<E, string_view>, N> enum_entries() noexcept;
 ```
 
-* Returns `std::array<std::pair<E, std::string_view>, N>` with all pairs (value, name) where `N = number of enum values`, sorted by enum value.
+* Returns `array<pair<E, string_view>, N>` with all pairs (value, name) where `N = number of enum values`, sorted by enum value.
 
 * Examples
 
@@ -214,7 +227,7 @@ constexpr optional<size_t> enum_index() noexcept;
 
 * Obtains index in enum values from enum value.
 
-* Returns `std::optional<std::size_t>` with index.
+* Returns `optional<size_t>` with index.
 
 * Examples
 
@@ -261,7 +274,7 @@ template <typename E>
 constexpr string_view enum_type_name() noexcept;
 ```
 
-* Returns type name of enum as `std::string_view` null-terminated string.
+* Returns type name of enum as `string_view` null-terminated string.
 
 * Examples
 
@@ -331,7 +344,7 @@ template <typename T>
 using underlying_type_t = typename underlying_type<T>::type;
 ```
 
-* Improved UB-free "SFINAE-friendly" [std::underlying_type](https://en.cppreference.com/w/cpp/types/underlying_type).
+* Improved UB-free "SFINAE-friendly" [underlying_type](https://en.cppreference.com/w/cpp/types/underlying_type).
 
 * If T is a complete enumeration type, provides a member typedef type that names the underlying type of T.</br>
   Otherwise, if T is not an enumeration type, there is no member type.</br>
