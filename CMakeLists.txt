@@ -1,6 +1,6 @@
-﻿cmake_minimum_required(VERSION 3.8)
+﻿cmake_minimum_required(VERSION 3.14)
 
-project(magic_enum VERSION "0.7.2" LANGUAGES CXX)
+project(magic_enum VERSION "0.7.3" LANGUAGES CXX)
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     set(IS_TOPLEVEL_PROJECT TRUE)
@@ -32,7 +32,8 @@ target_include_directories(${PROJECT_NAME}
 
 write_basic_package_version_file(${PROJECT_NAME}ConfigVersion.cmake
         VERSION ${PROJECT_VERSION}
-        COMPATIBILITY AnyNewerVersion)
+        COMPATIBILITY AnyNewerVersion
+        ARCH_INDEPENDENT)
 
 if(MAGIC_ENUM_OPT_INSTALL)
     install(TARGETS ${PROJECT_NAME}
